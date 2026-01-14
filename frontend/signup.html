@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Bhoomisetu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-green-700">Create Your Account</h2>
+    <form id="signup-form" class="space-y-4">
+      <input type="text" id="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Full Name" required />
+      <input type="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Email" required />
+      <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" placeholder="Password" required />
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition">Sign Up</button>
+    </form>
+    <p class="mt-4 text-center text-gray-600">Already have an account? <a href="login.html" class="text-green-700 font-semibold hover:underline">Login</a></p>
+    <div id="signup-message" class="mt-4 text-center text-sm"></div>
+  </div>
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const messageDiv = document.getElementById('signup-message');
+      messageDiv.textContent = '';
+      try {
+  const res = await fetch('http://localhost:3000/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          messageDiv.textContent = 'Registration successful! Redirecting to login...';
+          messageDiv.className = 'mt-4 text-center text-green-600 text-sm';
+          setTimeout(() => window.location.href = 'login.html', 1500);
+        } else {
+          messageDiv.textContent = data.message || 'Registration failed.';
+          messageDiv.className = 'mt-4 text-center text-red-600 text-sm';
+        }
+      } catch (err) {
+        messageDiv.textContent = 'Server error. Please try again later.';
+        messageDiv.className = 'mt-4 text-center text-red-600 text-sm';
+      }
+    });
+  </script>
+</body>
+</html>

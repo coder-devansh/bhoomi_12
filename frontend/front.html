@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bhoomisetu - Resolve Land Disputes Easily</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .hero-background {
+      background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+    }
+    @media (min-width: 768px) {
+      .hero-background {
+        clip-path: polygon(0 0, 100% 0, 100% 75%, 0% 100%);
+      }
+    }
+    .feature-icon {
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center">
+        <img src="image.png" alt="Bhoomisetu Logo" class="h-10 w-10 mr-3 rounded-full shadow-sm object-cover" onerror="this.src='https://placehold.co/40x40/ffffff/000000?text=Logo';">
+        <span class="text-2xl font-bold text-gray-800">Bhoomisetu</span>
+      </div>
+      <div class="hidden md:flex space-x-6">
+        <a href="#" class="nav-link text-gray-700 hover:text-green-600 font-medium">Home</a>
+        <a href="#features" class="nav-link text-gray-700 hover:text-green-600 font-medium">Features</a>
+        <a href="#about" class="nav-link text-gray-700 hover:text-green-600 font-medium">About Us</a>
+        <a href="#contact" class="nav-link text-gray-700 hover:text-green-600 font-medium">Contact</a>
+      </div>
+      <div class="flex items-center space-x-4">
+        <a href="#" id="login-link" class="px-5 py-2 border border-green-600 text-green-600 rounded-full hover:bg-green-50 transition duration-200 font-semibold">Login</a>
+        <a href="#" id="signup-link" class="px-5 py-2 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition duration-200 font-semibold">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-background text-white py-20 px-4 text-center">
+    <div class="container mx-auto max-w-4xl">
+      <h1 class="text-5xl md:text-6xl font-extrabold mb-6">
+        Simplify Your Land Dispute Resolution
+      </h1>
+      <p class="text-xl md:text-2xl mb-10 opacity-90">
+        Bhoomisetu provides a transparent, efficient, and secure platform to manage and resolve land disputes with ease.
+      </p>
+      <div class="space-x-4">
+        <a href="#" id="get-started-link" class="inline-block bg-white text-green-700 px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:bg-gray-100 transition transform hover:scale-105">
+          Get Started Now
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section id="features" class="py-16 px-4 bg-white">
+    <div class="container mx-auto text-center">
+      <h2 class="text-4xl font-bold text-gray-800 mb-12">Key Features</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Feature 1 -->
+        <div class="bg-gray-50 rounded-xl shadow-md p-8 hover:scale-105 transition-transform">
+          <div class="feature-icon text-5xl mb-6">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7s-8.268-2.943-9.542-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4">Full Transparency</h3>
+          <p class="text-gray-600">Track the progress of your disputes in real-time with complete visibility.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-gray-50 rounded-xl shadow-md p-8 hover:scale-105 transition-transform">
+          <div class="feature-icon text-5xl mb-6">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4">Streamlined Process</h3>
+          <p class="text-gray-600">Simplifies complex legal procedures for faster resolution.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-gray-50 rounded-xl shadow-md p-8 hover:scale-105 transition-transform">
+          <div class="feature-icon text-5xl mb-6">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2M6 21h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4">Secure & Reliable</h3>
+          <p class="text-gray-600">Your data is protected with state-of-the-art security protocols.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-green-700 text-white py-16 px-4 text-center">
+    <div class="container mx-auto max-w-3xl">
+      <h2 class="text-4xl font-bold mb-6">Having a land dispute? Let's resolve it—together</h2>
+      <p class="text-xl opacity-90 mb-8">Join Bhoomisetu and start your journey to resolution today.</p>
+      <div class="space-x-4">
+        <a href="#" id="cta-login-link" class="inline-block bg-white text-green-700 px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:bg-gray-100 transition transform hover:scale-105">Login</a>
+        <a href="#" id="cta-signup-link" class="inline-block border-2 border-white text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:text-green-700 transition transform hover:scale-105">Sign Up</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 px-4 bg-white text-center">
+    <div class="container mx-auto max-w-3xl">
+      <h2 class="text-4xl font-bold text-gray-800 mb-6">About Bhoomisetu</h2>
+      <p class="text-gray-600 text-lg">Bhoomisetu is dedicated to resolving land disputes with transparency, speed, and trust. Our mission is to empower citizens with a reliable digital platform to address their concerns effectively.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16 px-4 bg-gray-100 text-center">
+    <div class="container mx-auto max-w-3xl">
+      <h2 class="text-4xl font-bold text-gray-800 mb-6">Contact Us</h2>
+      <p class="text-gray-600 text-lg">Have questions or need help? Reach out to us anytime.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300 py-10 px-4">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Bhoomisetu</h3>
+        <p class="text-sm">Your trusted partner in land dispute resolution.</p>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-white">Home</a></li>
+          <li><a href="#features" class="hover:text-white">Features</a></li>
+          <li><a href="#about" class="hover:text-white">About Us</a></li>
+          <li><a href="#contact" class="hover:text-white">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-4">Contact Us</h3>
+        <p class="text-sm">Email: info@bhoomisetu.com</p>
+        <p class="text-sm">Phone: +91 123 456 7890</p>
+        <p class="text-sm">123 Land Lane, Dispute City, India</p>
+      </div>
+    </div>
+    <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
+      &copy; 2025 Bhoomisetu. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('login-link').onclick = () => window.location.href = 'login.html';
+      document.getElementById('signup-link').onclick = () => window.location.href = 'signup.html';
+      document.getElementById('get-started-link').onclick = () => window.location.href = 'signup.html';
+      document.getElementById('cta-login-link').onclick = () => window.location.href = 'login.html';
+      document.getElementById('cta-signup-link').onclick = () => window.location.href = 'signup.html';
+    });
+  </script>
+</body>
+</html>
