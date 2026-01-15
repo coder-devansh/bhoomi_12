@@ -10,10 +10,12 @@
     "dev:backend": "cd new_backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "cd frontend && npm install && npm run build",
+    "build:render": "cd frontend && npm install && npm run build && cd ../new_backend && npm install",
     "start": "cd new_backend && npm start",
     "start:prod": "npm run build && npm start",
     "heroku-postbuild": "npm run install:all && npm run build",
-    "vercel-build": "cd frontend && npm install && npm run build"
+    "vercel-build": "cd frontend && npm install && npm run build",
+    "render-build": "npm run build:render"
   },
   "engines": {
     "node": ">=18.0.0"

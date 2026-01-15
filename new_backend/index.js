@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import fs from 'fs';
+
 import authRoutes from './routes/auth.js';
 import disputeRoutes from './routes/dispute.js';
 import adminRoutes from './routes/admin.js';
@@ -38,6 +40,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Frontend dist path
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/disputes', disputeRoutes);
@@ -48,13 +54,17 @@ app.use('/api/documents', documentRoutes);
 
 // Serve static frontend in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  if (fs.existsSync(frontendDistPath)) {
+    app.use(express.static(frontendDistPath));
+  } else {
+    console.warn('Frontend dist folder not found at:', frontendDistPath);
+  }
 }
 
 // Simple health route
 app.get('/', (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  if (process.env.NODE_ENV === 'production' && fs.existsSync(frontendIndexPath)) {
+    res.sendFile(frontendIndexPath);
   } else {
     res.send('BhoomiSetu Backend API is running');
   }
@@ -65,6 +75,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok', 
     message: 'BhoomiSetu API ready',
     environment: process.env.NODE_ENV || 'development',
+    frontendAvailable: fs.existsSync(frontendIndexPath),
     timestamp: new Date().toISOString()
   });
 });
@@ -73,7 +84,11 @@ app.get('/api/health', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+      if (fs.existsSync(frontendIndexPath)) {
+        res.sendFile(frontendIndexPath);
+      } else {
+        res.status(404).json({ error: 'Frontend not built. Please run npm run build.' });
+      }
     }
   });
 }
