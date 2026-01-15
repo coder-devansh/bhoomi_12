@@ -15,7 +15,6 @@ export default function LawyerDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeView, setActiveView] = useState('disputes'); // 'disputes', 'ai-insights', 'ai-search', 'doc-verification'
   const [showDocGenerator, setShowDocGenerator] = useState(false);
-  const [verificationDisputeId, setVerificationDisputeId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -316,7 +315,7 @@ export default function LawyerDashboard() {
           <div className="text-xs font-semibold mb-2 text-slate-400 tracking-wide">AI FEATURES</div>
           
           <button
-            onClick={() => { setVerificationDisputeId(null); setActiveView('disputes'); }}
+            onClick={() => setActiveView('disputes')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'disputes'
                 ? "bg-[#2563EB] text-white"
@@ -328,7 +327,7 @@ export default function LawyerDashboard() {
           </button>
           
           <button
-            onClick={() => { setVerificationDisputeId(null); setActiveView('ai-insights'); }}
+            onClick={() => setActiveView('ai-insights')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'ai-insights'
                 ? "bg-[#2563EB] text-white"
@@ -340,7 +339,7 @@ export default function LawyerDashboard() {
           </button>
           
           <button
-            onClick={() => { setVerificationDisputeId(null); setActiveView('ai-search'); }}
+            onClick={() => setActiveView('ai-search')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'ai-search'
                 ? "bg-[#2563EB] text-white"
@@ -352,7 +351,7 @@ export default function LawyerDashboard() {
           </button>
           
           <button
-            onClick={() => { setVerificationDisputeId(null); setActiveView('doc-verification'); }}
+            onClick={() => setActiveView('doc-verification')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'doc-verification'
                 ? "bg-[#2563EB] text-white"
@@ -416,10 +415,7 @@ export default function LawyerDashboard() {
           </div>
         ) : activeView === 'doc-verification' ? (
           <div className="p-8">
-            <LawyerDocumentVerification
-              focusDisputeId={verificationDisputeId}
-              onClearFocus={() => setVerificationDisputeId(null)}
-            />
+            <LawyerDocumentVerification />
           </div>
         ) : (
         <div className="p-8 min-h-screen">
@@ -570,26 +566,14 @@ export default function LawyerDashboard() {
                       Case ID: {selectedDispute._id?.slice(-8) || 'N/A'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => {
-                        setVerificationDisputeId(selectedDispute._id);
-                        setActiveView('doc-verification');
-                      }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-sm transition"
-                    >
-                      <NavIcon name="check" className="w-5 h-5" />
-                      Verify Documents
-                    </button>
-                    <div className={`px-4 py-2 rounded-xl font-semibold border ${
-                      selectedDispute.status === 'resolved'
-                        ? "bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20"
-                        : selectedDispute.status === 'in progress'
-                        ? "bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/20"
-                        : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
-                    }`}>
-                      {selectedDispute.status || 'open'}
-                    </div>
+                  <div className={`px-4 py-2 rounded-xl font-semibold border ${
+                    selectedDispute.status === 'resolved'
+                      ? "bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20"
+                      : selectedDispute.status === 'in progress'
+                      ? "bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/20"
+                      : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
+                  }`}>
+                    {selectedDispute.status || 'open'}
                   </div>
                 </div>
 
