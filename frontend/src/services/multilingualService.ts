@@ -175,13 +175,18 @@ export const aiResponses = {
   }
 };
 
+// Type definitions for type safety
+type SupportedLang = keyof typeof translations;
+type TranslationKey = keyof typeof translations['en'];
+type AIResponseKey = keyof typeof aiResponses['en'];
+
 // Get translation for a key
-export const t = (key, lang = 'en') => {
+export const t = (key: TranslationKey, lang: SupportedLang = 'en'): string => {
   return translations[lang]?.[key] || translations['en'][key] || key;
 };
 
 // Get AI response in specified language
-export const getAIResponse = (topic, lang = 'en') => {
+export const getAIResponse = (topic: AIResponseKey, lang: SupportedLang = 'en'): string => {
   return aiResponses[lang]?.[topic] || aiResponses['en'][topic] || '';
 };
 
