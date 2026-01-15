@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface SearchResult {
   _id: string;
@@ -36,7 +37,7 @@ export default function AISmartSearch() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/ai/smart-search', {
+      const response = await fetch(API_ENDPOINTS.ai.smartSearch, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

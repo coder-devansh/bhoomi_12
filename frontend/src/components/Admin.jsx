@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Admin() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function Admin() {
     e.preventDefault();
     setMessage("");
     try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
+      const res = await fetch(API_ENDPOINTS.auth.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -36,7 +37,7 @@ export default function Admin() {
 
   const fetchDisputes = async (token) => {
     try {
-      const res = await fetch("http://localhost:3000/api/admin/disputes", {
+      const res = await fetch(API_ENDPOINTS.admin.disputes, {
         headers: { Authorization: "Bearer " + token },
       });
       const data = await res.json();
@@ -56,7 +57,7 @@ export default function Admin() {
   const updateStatus = async (id, newStatus) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/admin/disputes/${id}`,
+        API_ENDPOINTS.admin.disputeById(id),
         {
           method: "PATCH",
           headers: {

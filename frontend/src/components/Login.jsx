@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/login', {
+      const res = await fetch(API_ENDPOINTS.auth.login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -46,7 +47,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error('Login error:', err);
-      alert('Cannot connect to server. Please ensure the backend is running on http://localhost:3000');
+      alert('Cannot connect to server. Please try again later.');
     }
   };
 

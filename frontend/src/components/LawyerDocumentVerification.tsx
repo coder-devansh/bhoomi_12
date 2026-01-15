@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 interface Document {
   id: string;
@@ -53,7 +54,7 @@ const LawyerDocumentVerification: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'pending' | 'verified' | 'rejected'>('pending');
   const [activeTab, setActiveTab] = useState<'verification' | 'shared'>('verification');
 
-  const API_URL = 'http://localhost:3000/api/documents';
+  const API_URL = `${API_BASE_URL}/api/documents`;
 
   const fetchDocuments = useCallback(async () => {
     setLoading(true);
@@ -424,7 +425,7 @@ const LawyerDocumentVerification: React.FC = () => {
                       {selectedDoc?.id === doc.id ? '✕ Cancel' : '📝 Review & Verify'}
                     </button>
                     <a
-                      href={`http://localhost:3000/api/documents/download/${doc.id}`}
+                      href={`${API_URL}/download/${doc.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
@@ -618,7 +619,7 @@ const LawyerDocumentVerification: React.FC = () => {
                   {/* Action Buttons */}
                   <div className="mt-4 flex items-center gap-3">
                     <a
-                      href={`http://localhost:3000/api/documents/download/${doc.id}`}
+                      href={`${API_URL}/download/${doc.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"

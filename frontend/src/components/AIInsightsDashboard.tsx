@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Insights {
   totalDisputes: number;
@@ -58,10 +59,10 @@ export default function AIInsightsDashboard() {
     
     try {
       const [insightsRes, priorityRes] = await Promise.all([
-        fetch('http://localhost:3000/api/ai/insights', {
+        fetch(API_ENDPOINTS.ai.insights, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('http://localhost:3000/api/ai/priority-queue', {
+        fetch(API_ENDPOINTS.ai.priorityQueue, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from '../config/api';
 import AIDisputeAnalyzer from "./AIDisputeAnalyzer";
 import DocumentUploadForDispute from "./DocumentUploadForDispute.jsx";
 
@@ -36,7 +37,7 @@ export default function Dashboard() {
     if (!token) return;
     setLoadingDisputes(true);
     try {
-      const res = await fetch("http://localhost:3000/api/disputes", {
+      const res = await fetch(API_ENDPOINTS.disputes.base, {
         headers: { Authorization: "Bearer " + token },
       });
       if (res.ok) {
@@ -91,7 +92,7 @@ export default function Dashboard() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch("http://localhost:3000/api/disputes", {
+      const res = await fetch(API_ENDPOINTS.disputes.base, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

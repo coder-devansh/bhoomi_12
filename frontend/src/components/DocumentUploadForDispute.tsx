@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface DocumentUploadProps {
   disputeType: string;
@@ -82,7 +83,7 @@ const DocumentUploadForDispute: React.FC<DocumentUploadProps> = ({
         formData.append('disputeId', disputeId);
       }
 
-      const response = await fetch('http://localhost:3000/api/documents/upload-for-dispute', {
+      const response = await fetch(API_ENDPOINTS.documents.uploadForDispute, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`

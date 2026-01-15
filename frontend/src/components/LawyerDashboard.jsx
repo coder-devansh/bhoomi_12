@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import AIInsightsDashboard from './AIInsightsDashboard';
 import AISmartSearch from './AISmartSearch';
 import AIDocumentGenerator from './AIDocumentGenerator';
@@ -38,7 +39,7 @@ export default function LawyerDashboard() {
   const fetchDisputes = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/lawyer/disputes', {
+      const res = await fetch(API_ENDPOINTS.lawyer.disputes, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -57,7 +58,7 @@ export default function LawyerDashboard() {
   const handleViewDispute = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/lawyer/disputes/${id}`, {
+      const res = await fetch(API_ENDPOINTS.lawyer.disputeById(id), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -77,7 +78,7 @@ export default function LawyerDashboard() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/lawyer/disputes/${selectedDispute._id}/notes`, {
+      const res = await fetch(`${API_ENDPOINTS.lawyer.disputeById(selectedDispute._id)}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function LawyerDashboard() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/lawyer/disputes/${selectedDispute._id}/status`, {
+      const res = await fetch(`${API_ENDPOINTS.lawyer.disputeById(selectedDispute._id)}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 interface Document {
   id: string;
@@ -61,7 +62,7 @@ const BlockchainDocuments: React.FC = () => {
   const [showCertificate, setShowCertificate] = useState(false);
   const [certificate, setCertificate] = useState<any>(null);
 
-  const API_URL = 'http://localhost:3000/api/documents';
+  const API_URL = `${API_BASE_URL}/api/documents`;
 
   const fetchDocuments = useCallback(async () => {
     setLoading(true);

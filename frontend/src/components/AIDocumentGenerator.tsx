@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface DocumentGeneratorProps {
   disputeData: {
@@ -43,7 +44,7 @@ export default function AIDocumentGenerator({ disputeData, onClose }: DocumentGe
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/ai/generate-document', {
+      const response = await fetch(API_ENDPOINTS.ai.generateDocument, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

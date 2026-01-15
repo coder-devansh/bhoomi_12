@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface VoiceAssistantProps {
   onTranscript?: (text: string) => void;
@@ -75,7 +76,7 @@ export default function AIVoiceAssistant({ onTranscript }: VoiceAssistantProps) 
     setIsProcessing(true);
     
     try {
-      const res = await fetch('http://localhost:3000/api/ai/chat', {
+      const res = await fetch(API_ENDPOINTS.ai.chat, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

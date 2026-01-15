@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Message {
   id: string;
@@ -60,7 +61,7 @@ How can I assist you today?`,
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/ai/chat', {
+      const response = await fetch(API_ENDPOINTS.ai.chat, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
