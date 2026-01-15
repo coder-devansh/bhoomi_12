@@ -22,7 +22,7 @@ export default function LawyerDashboard() {
     const userRole = localStorage.getItem('userRole');
     
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -128,7 +128,7 @@ export default function LawyerDashboard() {
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
     localStorage.removeItem('userName');
-    navigate('/login');
+    navigate('/');
   };
 
   // Filter disputes based on search
