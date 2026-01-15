@@ -11,14 +11,10 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Auto-assign admin role if email is admin@bhoomisetu.com
-    let userRole = role || 'user';
+    // Only admin can be auto-assigned (fixed email). Lawyers must use /api/lawyer/signup and be verified.
+    let userRole = 'user';
     if (email === 'admin@bhoomisetu.com') {
       userRole = 'admin';
-    }
-    // Auto-assign lawyer role if email contains @lawyer or ends with @lawyer.com
-    if (email.includes('@lawyer') || email.endsWith('@lawyer.com')) {
-      userRole = 'lawyer';
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,6 +39,12 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Hard guarantee: the official admin email is always treated as admin.
+    if (user.email === 'admin@bhoomisetu.com' && user.role !== 'admin') {
+      user.role = 'admin';
+      await user.save();
     }
 
     const isMatch = await bcrypt.compare(password, user.password);

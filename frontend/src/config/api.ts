@@ -17,9 +17,15 @@ export const API_ENDPOINTS = {
   admin: {
     disputes: `${API_BASE_URL}/api/admin/disputes`,
     disputeById: (id: string) => `${API_BASE_URL}/api/admin/disputes/${id}`,
+    lawyers: `${API_BASE_URL}/api/admin/lawyers`,
+    verifyLawyer: (id: string) => `${API_BASE_URL}/api/admin/lawyer/${id}/verify`,
   },
   // Lawyer
   lawyer: {
+    auth: {
+      signup: `${API_BASE_URL}/api/lawyer/signup`,
+      login: `${API_BASE_URL}/api/lawyer/login`,
+    },
     disputes: `${API_BASE_URL}/api/lawyer/disputes`,
     disputeById: (id: string) => `${API_BASE_URL}/api/lawyer/disputes/${id}`,
   },
@@ -45,5 +51,7 @@ export const API_ENDPOINTS = {
   // Health
   health: `${API_BASE_URL}/api/health`,
 };
+
+export const UPLOADS_BASE_URL = `${API_BASE_URL}/uploads`;
 
 export default API_BASE_URL;

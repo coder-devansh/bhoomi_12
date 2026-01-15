@@ -151,6 +151,16 @@ export default function Login() {
                   Create Account
                 </Link>
               </p>
+              <p className="text-gray-600 mt-2">
+                Are you a lawyer?
+                <Link to="/lawyer/login" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors ml-1">
+                  Lawyer Login
+                </Link>
+                <span className="mx-2 text-gray-300">|</span>
+                <Link to="/lawyer/signup" className="font-semibold text-blue-600 hover:text-blue-500 transition-colors">
+                  Apply
+                </Link>
+              </p>
             </div>
           </div>
         ) : (

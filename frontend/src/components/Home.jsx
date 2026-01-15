@@ -1,6 +1,15 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import AuthOverlay from "./AuthOverlay";
 
 export default function Home() {
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+
+  const openAuth = (mode) => {
+    setAuthMode(mode);
+    setAuthOpen(true);
+  };
+
   return (
     <div className="antialiased bg-gray-50">
       {/* Navigation */}
@@ -45,18 +54,20 @@ export default function Home() {
             </a>
           </div>
           <div className="flex items-center space-x-4">
-            <Link
-              to="/login"
+            <button
+              type="button"
+              onClick={() => openAuth('login')}
               className="px-5 py-2 border border-green-600 text-green-600 rounded-full hover:bg-green-50 transition duration-200 font-semibold"
             >
               Login
-            </Link>
-            <Link
-              to="/signup"
+            </button>
+            <button
+              type="button"
+              onClick={() => openAuth('signup')}
               className="px-5 py-2 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition duration-200 font-semibold"
             >
               Sign Up
-            </Link>
+            </button>
           </div>
         </div>
       </nav>
@@ -76,12 +87,13 @@ export default function Home() {
             manage and resolve land disputes with ease.
           </p>
           <div className="space-x-4">
-            <Link
-              to="/signup"
+            <button
+              type="button"
+              onClick={() => openAuth('signup')}
               className="inline-block bg-white text-green-700 px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:bg-gray-100 transition transform hover:scale-105"
             >
               Get Started Now
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -188,21 +200,30 @@ export default function Home() {
             Join Bhoomisetu and start your journey to resolution today.
           </p>
           <div className="space-x-4">
-            <Link
-              to="/login"
+            <button
+              type="button"
+              onClick={() => openAuth('login')}
               className="inline-block bg-white text-green-700 px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:bg-gray-100 transition transform hover:scale-105"
             >
               Login
-            </Link>
-            <Link
-              to="/signup"
+            </button>
+            <button
+              type="button"
+              onClick={() => openAuth('signup')}
               className="inline-block border-2 border-white text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:text-green-700 transition transform hover:scale-105"
             >
               Sign Up
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      {authOpen && (
+        <AuthOverlay
+          initialMode={authMode}
+          onClose={() => setAuthOpen(false)}
+        />
+      )}
 
       {/* About Section */}
       <section id="about" className="py-16 px-4 bg-white text-center">
