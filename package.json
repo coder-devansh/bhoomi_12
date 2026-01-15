@@ -9,10 +9,11 @@
     "dev": "npm run dev:backend",
     "dev:backend": "cd new_backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "build": "cd frontend && npm run build",
+    "build": "cd frontend && npm install && npm run build",
     "start": "cd new_backend && npm start",
     "start:prod": "npm run build && npm start",
-    "heroku-postbuild": "npm run install:all && npm run build"
+    "heroku-postbuild": "npm run install:all && npm run build",
+    "vercel-build": "cd frontend && npm install && npm run build"
   },
   "engines": {
     "node": ">=18.0.0"
