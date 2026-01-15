@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "NODE_ENV=production node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step required for backend'",
+    "postinstall": "echo 'Backend ready'"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

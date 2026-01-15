@@ -1,0 +1,36 @@
+# render.yaml - Render Blueprint for one-click deployment
+services:
+  # Backend API
+  - type: web
+    name: bhoomisetu-api
+    env: node
+    rootDir: new_backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://bhoomisetu-frontend.onrender.com
+    healthCheckPath: /api/health
+
+  # Frontend Static Site
+  - type: web
+    name: bhoomisetu-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://bhoomisetu-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

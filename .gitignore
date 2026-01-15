@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+frontend/dist/
+build/
+
+# Environment files (IMPORTANT: Don't commit these!)
+.env
+.env.local
+.env.*.local
+new_backend/.env
+frontend/.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads (optional - uncomment if you don't want to track uploads)
+# new_backend/uploads/documents/*
+# !new_backend/uploads/documents/.gitkeep
+
+# Testing
+coverage/
+.nyc_output/
