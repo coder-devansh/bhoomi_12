@@ -12,21 +12,41 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!email || !password) {
+      alert('Please enter both email and password');
+      return;
+    }
+
     try {
       const res = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
+      
       const data = await res.json();
+      
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        navigate('/dashboard');
+        localStorage.setItem('userRole', data.user?.role || 'user');
+        localStorage.setItem('userName', data.user?.name || '');
+        
+        // Redirect based on user role
+        if (data.user?.role === 'lawyer') {
+          navigate('/lawyer-dashboard');
+        } else if (data.user?.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
-        alert(data.message || 'Login failed.');
+        alert(data.message || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      alert('Server error. Please try again later.');
+      console.error('Login error:', err);
+      alert('Cannot connect to server. Please ensure the backend is running on http://localhost:3000');
     }
   };
 
@@ -45,7 +65,7 @@ export default function Login() {
         <div className="flex flex-col items-center mb-8">
           <div className="relative mb-6">
             <img 
-              src="/image.png" 
+              src="/image.jpeg" 
               alt="Bhoomisetu Logo" 
               className="h-24 w-24 rounded-2xl shadow-lg object-cover border-4 border-white animate-float" 
               onError={(e) => { e.target.src = 'https://placehold.co/100x100/10b981/ffffff?text=🏠'; }}

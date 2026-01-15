@@ -8,7 +8,7 @@ export default function Home() {
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <img
-              src="/image.png"
+              src="/image.jpeg"
               alt="Bhoomisetu Logo"
               className="h-10 w-10 mr-3 rounded-full shadow-sm object-cover"
               onError={(e) => {

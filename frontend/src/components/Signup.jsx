@@ -37,11 +37,28 @@ export default function Signup() {
   };
 
   return (
-    <div className="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-green-700">
-          Create Your Account
-        </h2>
+    <div className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 flex items-center justify-center min-h-screen p-4 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute top-40 -left-40 w-60 h-60 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute -bottom-20 right-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
+      </div>
+      
+      <div className="bg-white/95 backdrop-blur-lg p-8 rounded-3xl shadow-2xl w-full max-w-md relative z-10">
+        {/* Logo and App Name */}
+        <div className="flex flex-col items-center mb-8">
+          <img 
+            src="/image.jpeg" 
+            alt="Bhoomisetu Logo" 
+            className="h-20 w-20 rounded-2xl shadow-lg object-cover border-4 border-white mb-4" 
+            onError={(e) => { e.target.src = 'https://placehold.co/80x80/10b981/ffffff?text=🏠'; }}
+          />
+          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+            Bhoomisetu
+          </h1>
+          <p className="text-gray-600 font-medium">Create Your Account</p>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"

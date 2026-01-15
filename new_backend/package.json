@@ -1,5 +1,5 @@
 {
-  "name": "bhoomisetu-backend",
+  "name": "bhoomisetu-new-backend",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -8,12 +8,15 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.3"
+    "mongoose": "^7.0.3",
+    "multer": "^2.0.2",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
