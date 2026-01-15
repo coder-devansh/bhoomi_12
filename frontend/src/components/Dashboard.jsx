@@ -6,10 +6,11 @@ import DocumentUploadForDispute from "./DocumentUploadForDispute.jsx";
 
 export default function Dashboard() {
   const [activePage, setActivePage] = useState("dashboard");
-  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const [showAIAnalyzer, setShowAIAnalyzer] = useState(false);
   const [analyzeData, setAnalyzeData] = useState(null);
+
+  const [feedbackRating, setFeedbackRating] = useState(4);
 
   // User disputes fetched from backend
   const [userDisputes, setUserDisputes] = useState([]);
@@ -118,7 +119,7 @@ export default function Dashboard() {
       });
       const data = await res.json();
       if (res.ok) {
-        alert("✅ Request submitted successfully! Documents will be reviewed by a lawyer.");
+        alert("Request submitted successfully. Documents will be reviewed by a lawyer.");
         setActivePage("status");
         setFormData({
           title: "",
@@ -151,60 +152,195 @@ export default function Dashboard() {
     });
   };
 
+  const NavIcon = ({ name, className = "w-5 h-5" }) => {
+    const common = { className, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" };
+    switch (name) {
+      case "dashboard":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m0-8H5a2 2 0 00-2 2v6m8-8h8a2 2 0 012 2v6m-10 0h4" />
+          </svg>
+        );
+      case "mutual":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a4 4 0 00-4-4h-1m-4 6H2v-2a4 4 0 014-4h7m4-6a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        );
+      case "family":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V10.5z" />
+          </svg>
+        );
+      case "boundary":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21s-6-4.35-6-10a6 6 0 1112 0c0 5.65-6 10-6 10z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11a2 2 0 100-4 2 2 0 000 4z" />
+          </svg>
+        );
+      case "documents":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 13a5 5 0 007.07 0l1.41-1.41a5 5 0 00-7.07-7.07L10 4.93" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 11a5 5 0 00-7.07 0L5.52 12.41a5 5 0 007.07 7.07L14 19.07" />
+          </svg>
+        );
+      case "profile":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 14a4 4 0 10-8 0" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 20a8 8 0 0116 0" />
+          </svg>
+        );
+      case "status":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m-6-8h6M7 3h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+          </svg>
+        );
+      case "settings":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317a1 1 0 011.35-.936l1.02.38a1 1 0 00.933-.127l.91-.63a1 1 0 011.54.84v1.09a1 1 0 00.294.707l.72.72a1 1 0 00.707.293h1.09a1 1 0 01.84 1.54l-.63.91a1 1 0 00-.127.933l.38 1.02a1 1 0 01-.936 1.35H19a1 1 0 00-.707.293l-.72.72a1 1 0 00-.294.707V19a1 1 0 01-1.54.84l-.91-.63a1 1 0 00-.933-.127l-1.02.38a1 1 0 01-1.35-.936V19a1 1 0 00-.293-.707l-.72-.72A1 1 0 009 17H7.91a1 1 0 01-.84-1.54l.63-.91a1 1 0 00.127-.933l-.38-1.02a1 1 0 01.936-1.35H9a1 1 0 00.707-.293l.72-.72A1 1 0 0010.325 8V6.91a1 1 0 01.936-1.35z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15a3 3 0 110-6 3 3 0 010 6z" />
+          </svg>
+        );
+      case "feedback":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8m-8 4h5m-7 7l-2 0a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v9a2 2 0 01-2 2H9l-3 4z" />
+          </svg>
+        );
+      case "logout":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        );
+      case "bell":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        );
+      case "file":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 3h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 3v5h5" />
+          </svg>
+        );
+      case "clock":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v5l3 2" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case "sparkles":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3zm10 6l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3zm-5 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
+          </svg>
+        );
+      case "inbox":
+        return (
+          <svg {...common}>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V5a2 2 0 00-2-2H6a2 2 0 00-2 2v8m16 0l-2 8H6l-2-8m16 0h-5l-1 2h-4l-1-2H4" />
+          </svg>
+        );
+      case "star":
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 17.27l5.18 3.13-1.39-5.97L20.5 10.3l-6.11-.52L12 4.2 9.61 9.78 3.5 10.3l4.71 4.13-1.39 5.97L12 17.27z" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getDisputeIconName = (title = "") => {
+    if (title.includes("Mutual")) return "mutual";
+    if (title.includes("Family")) return "family";
+    return "boundary";
+  };
+
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen flex bg-slate-50">
       {/* Sidebar */}
-      <div className="w-56 bg-white shadow-xl flex flex-col">
+      <div className="w-72 bg-slate-900 flex flex-col border-r border-slate-800">
         {/* Profile Section */}
-        <div className="p-6 flex flex-col items-center border-b border-gray-100">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-3xl shadow-lg mb-3">
-            👤
+        <div className="p-6 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
+              <span className="text-white font-semibold">BS</span>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-white">BhoomiSetu</h3>
+              <p className="text-xs text-slate-300">User Dashboard</p>
+            </div>
           </div>
-          <h3 className="font-bold text-gray-800">Welcome, User</h3>
-          <p className="text-sm text-gray-500">Land Owner</p>
+
+          <div className="mt-5 flex items-center gap-3 rounded-xl bg-slate-800/60 p-3">
+            <div className="h-11 w-11 rounded-full bg-slate-700 flex items-center justify-center text-slate-200">
+              <NavIcon name="profile" className="w-6 h-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-white truncate">{localStorage.getItem("userName") || "User"}</p>
+              <p className="text-xs text-slate-300">Land Owner</p>
+            </div>
+          </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {[
-            { id: "dashboard", icon: "📊", label: "Dashboard" },
-            { id: "mutual-partition", icon: "🤝", label: "Mutual Partition" },
-            { id: "family-partition", icon: "🏠", label: "Family Partition" },
-            { id: "boundary-demarcation", icon: "📍", label: "Boundary Demarcation" },
-            { id: "documents", icon: "🔗", label: "Blockchain Documents" },
-            { id: "profile", icon: "👤", label: "User Profile" },
-            { id: "status", icon: "📋", label: "Status" },
-            { id: "settings", icon: "⚙️", label: "Settings" },
-            { id: "feedback", icon: "💬", label: "Feedback" },
+            { id: "dashboard", icon: "dashboard", label: "Dashboard" },
+            { id: "mutual-partition", icon: "mutual", label: "Mutual Partition" },
+            { id: "family-partition", icon: "family", label: "Family Partition" },
+            { id: "boundary-demarcation", icon: "boundary", label: "Boundary Demarcation" },
+            { id: "documents", icon: "documents", label: "Blockchain Documents", route: "/documents" },
+            { id: "profile", icon: "profile", label: "User Profile" },
+            { id: "status", icon: "status", label: "Status" },
+            { id: "settings", icon: "settings", label: "Settings" },
+            { id: "feedback", icon: "feedback", label: "Feedback" },
           ].map((item) => (
             <button
               key={item.id}
               onClick={() => {
-                if (item.id === "documents") {
-                  window.location.href = "/documents";
+                if (item.route) {
+                  navigate(item.route);
                 } else {
                   setActivePage(item.id);
                 }
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left border ${
                 activePage === item.id
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "bg-indigo-600 text-white border-indigo-500 shadow"
+                  : "text-slate-200 border-transparent hover:bg-slate-800 hover:border-slate-700"
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="shrink-0 text-slate-200">
+                <NavIcon name={item.icon} />
+              </span>
               <span className="font-medium text-sm">{item.label}</span>
             </button>
           ))}
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-slate-800">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-200 hover:bg-red-950/40 transition-all"
           >
-            <span className="text-lg">🚪</span>
+            <span className="shrink-0">
+              <NavIcon name="logout" />
+            </span>
             <span className="font-medium text-sm">Logout</span>
           </button>
         </div>
@@ -213,28 +349,26 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header Bar */}
-        <header className="bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-8 py-4 flex items-center justify-between shadow-lg">
+        <header className="bg-white/90 backdrop-blur px-8 py-4 flex items-center justify-between border-b border-slate-200">
           <div className="flex items-center gap-3">
             <img 
               src="/image.jpeg" 
               alt="BhoomiSetu Logo" 
-              className="h-10 w-10 rounded-lg shadow-md object-cover border-2 border-white/30"
+              className="h-10 w-10 rounded-lg shadow-sm object-cover border border-slate-200"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
-            <h1 className="text-2xl font-bold text-white tracking-wide">BhoomiSetu</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">BhoomiSetu</h1>
+              <p className="text-xs text-slate-500">Land dispute applications and document workflow</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             {/* Notification Bell */}
-            <button className="relative p-2 bg-white/20 rounded-full hover:bg-white/30 transition">
-              <span className="text-white text-xl">🔔</span>
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-bold">3</span>
-            </button>
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition"
-            >
-              <span className="text-white text-xl">{darkMode ? "☀️" : "🌙"}</span>
+            <button className="relative p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition" aria-label="Notifications">
+              <span className="text-slate-700">
+                <NavIcon name="bell" className="w-6 h-6" />
+              </span>
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full text-[11px] text-white flex items-center justify-center font-bold">3</span>
             </button>
           </div>
         </header>
@@ -247,22 +381,32 @@ export default function Dashboard() {
               {/* Stats Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: "Total Applications", value: stats.total, icon: "📄", bgColor: "from-blue-400 to-blue-600" },
-                  { label: "Approved", value: stats.approved, icon: "✅", bgColor: "from-green-400 to-green-600" },
-                  { label: "Pending", value: stats.pending, icon: "⏳", bgColor: "from-yellow-400 to-orange-500" },
-                  { label: "In Process", value: stats.inProcess, icon: "⚙️", bgColor: "from-purple-400 to-purple-600" },
+                  { label: "Total Applications", value: stats.total, tone: "indigo", icon: "file" },
+                  { label: "Approved", value: stats.approved, tone: "green", icon: "status" },
+                  { label: "Pending", value: stats.pending, tone: "amber", icon: "clock" },
+                  { label: "In Process", value: stats.inProcess, tone: "slate", icon: "settings" },
                 ].map((stat, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-3xl font-bold text-gray-800">{stat.value}</p>
                         <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
                       </div>
-                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.bgColor} flex items-center justify-center text-2xl text-white shadow-lg`}>
-                        {stat.icon}
+                      <div
+                        className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-sm ${
+                          stat.tone === "indigo"
+                            ? "bg-indigo-600"
+                            : stat.tone === "green"
+                            ? "bg-green-600"
+                            : stat.tone === "amber"
+                            ? "bg-amber-500"
+                            : "bg-slate-700"
+                        }`}
+                      >
+                        <NavIcon name={stat.icon} className="w-7 h-7" />
                       </div>
                     </div>
                   </div>
@@ -275,39 +419,48 @@ export default function Dashboard() {
                   {
                     title: "Mutual Partition",
                     desc: "Request partition by mutual agreement between all parties involved. Fast-track process for amicable settlements.",
-                    icon: "🤝",
-                    color: "from-blue-500 to-indigo-600",
+                    icon: "mutual",
+                    tone: "indigo",
                     page: "mutual-partition",
                   },
                   {
                     title: "Family Partition",
                     desc: "Submit a family-based partition request. Specialized process for ancestral property division among family members.",
-                    icon: "🏠",
-                    color: "from-green-500 to-teal-600",
+                    icon: "family",
+                    tone: "green",
                     page: "family-partition",
                   },
                   {
                     title: "Boundary Demarcation",
                     desc: "Request official demarcation of land boundaries to resolve disputes over property lines.",
-                    icon: "📍",
-                    color: "from-orange-500 to-red-500",
+                    icon: "boundary",
+                    tone: "amber",
                     page: "boundary-demarcation",
                   },
                   {
-                    title: "Other Services",
-                    desc: "More services coming soon to help you with various land management needs.",
-                    icon: "📦",
-                    color: "from-gray-400 to-gray-500",
+                    title: "Blockchain Documents",
+                    desc: "Securely upload and verify your land documents on blockchain. Get tamper-proof certificates.",
+                    icon: "documents",
+                    tone: "indigo",
                     page: null,
-                    disabled: true,
+                    route: "/documents",
+                    disabled: false,
                   },
                 ].map((service, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all flex flex-col"
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-all flex flex-col"
                   >
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center text-xl text-white shadow mb-4`}>
-                      {service.icon}
+                    <div
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm mb-4 ${
+                        service.tone === "green"
+                          ? "bg-green-600"
+                          : service.tone === "amber"
+                          ? "bg-amber-500"
+                          : "bg-indigo-600"
+                      }`}
+                    >
+                      <NavIcon name={service.icon} className="w-6 h-6" />
                     </div>
                     <h3 className="font-bold text-lg text-gray-800 mb-2">{service.title}</h3>
                     <p className="text-sm text-gray-500 flex-1 mb-4">{service.desc}</p>
@@ -317,8 +470,8 @@ export default function Dashboard() {
                       </span>
                     ) : (
                       <button
-                        onClick={() => setActivePage(service.page)}
-                        className={`px-4 py-2 rounded-lg bg-gradient-to-r ${service.color} text-white font-semibold text-sm shadow hover:opacity-90 transition`}
+                        onClick={() => service.route ? navigate(service.route) : setActivePage(service.page)}
+                        className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm shadow-sm hover:bg-indigo-700 transition"
                       >
                         OPEN
                       </button>
@@ -330,7 +483,9 @@ export default function Dashboard() {
               {/* Recent Activity */}
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="text-2xl">🕐</span>
+                  <span className="text-indigo-600">
+                    <NavIcon name="clock" className="w-6 h-6" />
+                  </span>
                   <h2 className="text-xl font-bold text-gray-800">Recent Activity</h2>
                 </div>
                 {userDisputes.length === 0 ? (
@@ -343,8 +498,8 @@ export default function Dashboard() {
                         className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-                            📄
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200">
+                            <NavIcon name="file" className="w-5 h-5" />
                           </div>
                           <div>
                             <p className="font-semibold text-gray-800">
@@ -377,14 +532,14 @@ export default function Dashboard() {
         {/* Form Pages */}
         {["mutual-partition", "family-partition", "boundary-demarcation"].includes(activePage) && (
           <div className="animate-fadeIn">
-            <div className="bg-white rounded-2xl p-8 shadow-lg max-w-4xl">
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 max-w-4xl">
               <div className="flex items-center gap-4 mb-6">
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl text-white shadow-lg ${
-                  activePage === "mutual-partition" ? "bg-gradient-to-br from-blue-500 to-indigo-600" :
-                  activePage === "family-partition" ? "bg-gradient-to-br from-green-500 to-teal-600" :
-                  "bg-gradient-to-br from-orange-500 to-red-500"
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-sm ${
+                  activePage === "mutual-partition" ? "bg-indigo-600" :
+                  activePage === "family-partition" ? "bg-green-600" :
+                  "bg-amber-500"
                 }`}>
-                  {activePage === "mutual-partition" ? "🤝" : activePage === "family-partition" ? "🏠" : "📍"}
+                  <NavIcon name={activePage === "mutual-partition" ? "mutual" : activePage === "family-partition" ? "family" : "boundary"} className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">
@@ -414,7 +569,7 @@ export default function Dashboard() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -425,7 +580,7 @@ export default function Dashboard() {
                     value={formData.landNumber}
                     onChange={handleInputChange}
                     placeholder="Enter land number"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -436,7 +591,7 @@ export default function Dashboard() {
                     value={formData.khataNumber}
                     onChange={handleInputChange}
                     placeholder="Enter khata number"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -447,7 +602,7 @@ export default function Dashboard() {
                     value={formData.landArea}
                     onChange={handleInputChange}
                     placeholder="Enter land area"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -459,7 +614,7 @@ export default function Dashboard() {
                     onChange={handleInputChange}
                     placeholder="12-digit Aadhaar number"
                     pattern="\d{12}"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -471,7 +626,7 @@ export default function Dashboard() {
                     onChange={handleInputChange}
                     placeholder="10-digit mobile number"
                     pattern="\d{10}"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   />
                 </div>
@@ -483,7 +638,7 @@ export default function Dashboard() {
                     onChange={handleInputChange}
                     placeholder="Enter your full address"
                     rows="2"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                     required
                   ></textarea>
                 </div>
@@ -495,7 +650,7 @@ export default function Dashboard() {
                     onChange={handleInputChange}
                     placeholder="Describe your request in detail..."
                     rows="4"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
                   ></textarea>
                 </div>
 
@@ -516,16 +671,17 @@ export default function Dashboard() {
                         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                         .join(" ")
                     )}
-                    className="flex-1 py-4 rounded-xl font-bold text-indigo-600 bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 transition text-lg flex items-center justify-center gap-2"
+                    className="flex-1 py-4 rounded-xl font-bold text-indigo-700 bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 transition text-lg flex items-center justify-center gap-2"
                   >
-                    🤖 AI Analysis
+                    <NavIcon name="sparkles" className="w-6 h-6" />
+                    AI Analysis
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`flex-1 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg hover:opacity-90 transition text-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`flex-1 py-4 rounded-xl font-bold text-white bg-indigo-600 shadow-sm hover:bg-indigo-700 transition text-lg ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
                   >
-                    {isSubmitting ? '⏳ Submitting...' : 'Submit Request'}
+                    {isSubmitting ? 'Submitting...' : 'Submit Request'}
                   </button>
                 </div>
               </form>
@@ -556,12 +712,14 @@ export default function Dashboard() {
                 </div>
               ) : userDisputes.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="text-6xl mb-4">📭</div>
+                  <div className="mx-auto mb-4 h-14 w-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+                    <NavIcon name="inbox" className="w-8 h-8" />
+                  </div>
                   <h3 className="text-xl font-semibold text-gray-700 mb-2">No Requests Yet</h3>
                   <p className="text-gray-500 mb-6">You haven't submitted any partition or demarcation requests.</p>
                   <button
                     onClick={() => setActivePage("mutual-partition")}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl shadow hover:opacity-90 transition"
+                    className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-sm hover:bg-indigo-700 transition"
                   >
                     Submit Your First Request
                   </button>
@@ -582,8 +740,8 @@ export default function Dashboard() {
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="text-2xl">
-                              {dispute.title?.includes("Mutual") ? "🤝" : dispute.title?.includes("Family") ? "🏠" : "📍"}
+                            <span className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center">
+                              <NavIcon name={getDisputeIconName(dispute.title || "")} className="w-5 h-5" />
                             </span>
                             <h3 className="font-bold text-lg text-gray-800">
                               {dispute.title || "Request"}
@@ -756,16 +914,13 @@ export default function Dashboard() {
                       <button
                         key={star}
                         type="button"
-                        className="text-4xl hover:scale-110 transition-transform"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const stars = e.target.closest("div").querySelectorAll("button");
-                          stars.forEach((s, i) => {
-                            s.textContent = i < star ? "⭐" : "☆";
-                          });
-                        }}
+                        onClick={() => setFeedbackRating(star)}
+                        className="p-2 rounded-lg hover:bg-slate-100 transition"
+                        aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
                       >
-                        {star <= 4 ? "⭐" : "☆"}
+                        <span className={star <= feedbackRating ? "text-amber-500" : "text-slate-300"}>
+                          <NavIcon name="star" className="w-8 h-8" />
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -787,8 +942,8 @@ export default function Dashboard() {
           <div className="space-y-6 animate-fadeIn">
             <div className="bg-white rounded-2xl p-8 shadow-lg max-w-3xl mx-auto">
               <div className="text-center mb-8">
-                <div className="w-28 h-28 rounded-full mx-auto mb-4 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-5xl text-white shadow-lg">
-                  👤
+                <div className="w-28 h-28 rounded-full mx-auto mb-4 bg-slate-900 flex items-center justify-center text-white shadow-sm">
+                  <NavIcon name="profile" className="w-12 h-12" />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">
                   {localStorage.getItem("userName") || "User"}

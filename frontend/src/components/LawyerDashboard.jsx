@@ -12,10 +12,10 @@ export default function LawyerDashboard() {
   const [note, setNote] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeView, setActiveView] = useState('disputes'); // 'disputes', 'ai-insights', 'ai-search', 'doc-verification'
   const [showDocGenerator, setShowDocGenerator] = useState(false);
+  const [verificationDisputeId, setVerificationDisputeId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -147,35 +147,124 @@ export default function LawyerDashboard() {
     resolved: disputes.filter(d => d.status === 'resolved').length,
   };
 
+  const NavIcon = ({ name, className = "w-5 h-5" }) => {
+    switch (name) {
+      case 'scale':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v18" />
+            <path d="M6 7h12" />
+            <path d="M6 7l-3 6a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3L6 7z" />
+            <path d="M18 7l-3 6a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3l-3-6z" />
+          </svg>
+        );
+      case 'search':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+        );
+      case 'list':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 6h13" />
+            <path d="M8 12h13" />
+            <path d="M8 18h13" />
+            <path d="M3 6h.01" />
+            <path d="M3 12h.01" />
+            <path d="M3 18h.01" />
+          </svg>
+        );
+      case 'chart':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M7 14v4" />
+            <path d="M12 10v8" />
+            <path d="M17 6v12" />
+          </svg>
+        );
+      case 'check':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        );
+      case 'file':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <path d="M14 2v6h6" />
+          </svg>
+        );
+      case 'clock':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v6l4 2" />
+          </svg>
+        );
+      case 'gear':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+            <path d="M19.4 15a7.9 7.9 0 0 0 .1-1l2-1.2-2-3.5-2.3.5a7.9 7.9 0 0 0-1.7-1L15 5h-6l-.5 2.8a7.9 7.9 0 0 0-1.7 1L4.5 8.3l-2 3.5 2 1.2a7.9 7.9 0 0 0 0 2l-2 1.2 2 3.5 2.3-.5a7.9 7.9 0 0 0 1.7 1L9 19h6l.5-2.8a7.9 7.9 0 0 0 1.7-1l2.3.5 2-3.5-2-1.2z" />
+          </svg>
+        );
+      case 'logout':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="M16 17l5-5-5-5" />
+            <path d="M21 12H9" />
+          </svg>
+        );
+      case 'inbox':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+            <path d="M5 4h14l3 8v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8z" />
+          </svg>
+        );
+      case 'note':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16v16H4z" />
+            <path d="M8 8h8" />
+            <path d="M8 12h8" />
+            <path d="M8 16h5" />
+          </svg>
+        );
+      case 'plus':
+        return (
+          <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
-      }`}>
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <div className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Loading disputes...</div>
+          <div className="w-16 h-16 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-xl font-semibold text-slate-900">Loading disputes...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex ${
-      darkMode
-        ? "bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900"
-        : "bg-gray-50"
-    }`}>
+    <div className="min-h-screen flex bg-[#F8FAFC]">
       {/* Sidebar */}
-      <div className={`w-64 ${
-        darkMode 
-          ? "bg-slate-800 border-r border-slate-700" 
-          : "bg-white border-r border-gray-200"
-      } shadow-lg`}>
+      <div className="w-72 bg-[#0F172A] border-r border-slate-800 shadow-lg">
         {/* Sidebar Header */}
-        <div className={`p-6 border-b ${
-          darkMode ? 'border-slate-700' : 'border-gray-200'
-        }`}>
+        <div className="p-6 border-b border-slate-800">
           <div className="flex items-center gap-4 mb-4">
             <img 
               src="/image.jpeg" 
@@ -186,181 +275,121 @@ export default function LawyerDashboard() {
                 e.target.nextElementSibling.style.display = 'flex';
               }}
             />
-            <div className={`w-16 h-16 rounded-xl ${
-              darkMode ? "bg-indigo-600" : "bg-indigo-100"
-            } items-center justify-center text-2xl hidden`}>
-              ⚖️
+            <div className="w-16 h-16 rounded-xl bg-[#2563EB]/15 items-center justify-center text-[#2563EB] hidden">
+              <NavIcon name="scale" className="w-8 h-8" />
             </div>
             <div className="flex-1">
-              <div className={`text-lg font-bold ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}>
+              <div className="text-lg font-bold text-white">
                 Lawyer Panel
               </div>
-              <div className={`text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-600"
-              }`}>
+              <div className="text-sm text-slate-300">
                 {localStorage.getItem("userName") || "Legal Professional"}
               </div>
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <span className={`text-xs px-3 py-1 rounded-full ${
-              darkMode 
-                ? "bg-indigo-900/50 text-indigo-300" 
-                : "bg-indigo-100 text-indigo-700"
-            }`}>
+            <span className="text-xs px-3 py-1 rounded-full bg-[#2563EB]/15 text-[#93C5FD] border border-[#2563EB]/20">
               Legal Professional
             </span>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`p-2 rounded-lg ${
-                darkMode ? "hover:bg-slate-700" : "hover:bg-gray-100"
-              } transition-colors`}
-            >
-              {darkMode ? "☀️" : "🌙"}
-            </button>
           </div>
         </div>
 
         {/* Search */}
-        <div className="p-4 border-b border-slate-700 dark:border-gray-200">
+        <div className="p-4 border-b border-slate-800">
           <div className="relative">
             <input
               type="text"
               placeholder="Search disputes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full px-4 py-2 pl-10 rounded-lg border ${
-                darkMode
-                  ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
-                  : "bg-white border-gray-300"
-              } focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200`}
+              className="w-full px-4 py-2 pl-10 rounded-lg border border-slate-700 bg-slate-900/30 text-white placeholder-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
             />
-            <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+            <span className="absolute left-3 top-2.5 text-slate-400">
+              <NavIcon name="search" className="w-5 h-5" />
+            </span>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="p-4 space-y-1">
           {/* AI Features Section */}
-          <div className={`text-xs font-semibold mb-2 ${
-            darkMode ? "text-gray-400" : "text-gray-600"
-          }`}>🤖 AI FEATURES</div>
+          <div className="text-xs font-semibold mb-2 text-slate-400 tracking-wide">AI FEATURES</div>
           
           <button
-            onClick={() => setActiveView('disputes')}
+            onClick={() => { setVerificationDisputeId(null); setActiveView('disputes'); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'disputes'
-                ? darkMode 
-                  ? "bg-indigo-600 text-white" 
-                  : "bg-indigo-100 text-indigo-700"
-                : darkMode
-                  ? "text-gray-300 hover:bg-slate-700"
-                  : "text-gray-700 hover:bg-gray-100"
+                ? "bg-[#2563EB] text-white"
+                : "text-slate-200 hover:bg-slate-800/60"
             }`}
           >
-            <span className="text-xl">📋</span>
+            <NavIcon name="list" className="w-5 h-5" />
             <span className="font-medium">All Disputes</span>
           </button>
           
           <button
-            onClick={() => setActiveView('ai-insights')}
+            onClick={() => { setVerificationDisputeId(null); setActiveView('ai-insights'); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'ai-insights'
-                ? darkMode 
-                  ? "bg-indigo-600 text-white" 
-                  : "bg-indigo-100 text-indigo-700"
-                : darkMode
-                  ? "text-gray-300 hover:bg-slate-700"
-                  : "text-gray-700 hover:bg-gray-100"
+                ? "bg-[#2563EB] text-white"
+                : "text-slate-200 hover:bg-slate-800/60"
             }`}
           >
-            <span className="text-xl">📊</span>
+            <NavIcon name="chart" className="w-5 h-5" />
             <span className="font-medium">AI Insights</span>
           </button>
           
           <button
-            onClick={() => setActiveView('ai-search')}
+            onClick={() => { setVerificationDisputeId(null); setActiveView('ai-search'); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'ai-search'
-                ? darkMode 
-                  ? "bg-indigo-600 text-white" 
-                  : "bg-indigo-100 text-indigo-700"
-                : darkMode
-                  ? "text-gray-300 hover:bg-slate-700"
-                  : "text-gray-700 hover:bg-gray-100"
+                ? "bg-[#2563EB] text-white"
+                : "text-slate-200 hover:bg-slate-800/60"
             }`}
           >
-            <span className="text-xl">🔍</span>
+            <NavIcon name="search" className="w-5 h-5" />
             <span className="font-medium">Smart Search</span>
           </button>
           
           <button
-            onClick={() => setActiveView('doc-verification')}
+            onClick={() => { setVerificationDisputeId(null); setActiveView('doc-verification'); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               activeView === 'doc-verification'
-                ? darkMode 
-                  ? "bg-indigo-600 text-white" 
-                  : "bg-indigo-100 text-indigo-700"
-                : darkMode
-                  ? "text-gray-300 hover:bg-slate-700"
-                  : "text-gray-700 hover:bg-gray-100"
+                ? "bg-[#2563EB] text-white"
+                : "text-slate-200 hover:bg-slate-800/60"
             }`}
           >
-            <span className="text-xl">✅</span>
+            <NavIcon name="check" className="w-5 h-5" />
             <span className="font-medium">Doc Verification</span>
           </button>
           
           <button
             onClick={() => setShowDocGenerator(true)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-              darkMode
-                ? "text-gray-300 hover:bg-slate-700"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-slate-200 hover:bg-slate-800/60"
           >
-            <span className="text-xl">📄</span>
+            <NavIcon name="file" className="w-5 h-5" />
             <span className="font-medium">Doc Generator</span>
           </button>
 
-          <div className={`px-4 py-2 rounded-lg ${
-            darkMode ? "bg-slate-700" : "bg-gray-100"
-          } mb-4 mt-4`}>
-            <div className={`text-xs font-semibold mb-2 ${
-              darkMode ? "text-gray-400" : "text-gray-600"
-            }`}>Quick Stats</div>
+          <div className="px-4 py-3 rounded-xl bg-slate-900/30 border border-slate-700 mb-4 mt-4">
+            <div className="text-xs font-semibold mb-2 text-slate-400">Quick Stats</div>
             <div className="grid grid-cols-2 gap-2">
               <div className="text-center">
-                <div className={`text-xl font-bold ${
-                  darkMode ? "text-white" : "text-gray-900"
-                }`}>{stats.total}</div>
-                <div className={`text-xs ${
-                  darkMode ? "text-gray-400" : "text-gray-600"
-                }`}>Total</div>
+                <div className="text-xl font-bold text-white">{stats.total}</div>
+                <div className="text-xs text-slate-400">Total</div>
               </div>
               <div className="text-center">
-                <div className={`text-xl font-bold ${
-                  darkMode ? "text-white" : "text-gray-900"
-                }`}>{stats.pending}</div>
-                <div className={`text-xs ${
-                  darkMode ? "text-gray-400" : "text-gray-600"
-                }`}>Pending</div>
+                <div className="text-xl font-bold text-white">{stats.pending}</div>
+                <div className="text-xs text-slate-400">Pending</div>
               </div>
             </div>
           </div>
-          <div className={`pt-4 mt-4 border-t ${
-            darkMode ? "border-slate-700" : "border-gray-200"
-          }`}>
+          <div className="pt-4 mt-4 border-t border-slate-800">
             <button
               onClick={handleLogout}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                darkMode
-                  ? "text-red-400 hover:bg-red-900/30"
-                  : "text-red-600 hover:bg-red-50"
-              }`}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-[#FCA5A5] hover:bg-[#DC2626]/10"
             >
-              <span className="text-xl">🚪</span>
+              <NavIcon name="logout" className="w-5 h-5" />
               <span className="font-medium">Logout</span>
             </button>
           </div>
@@ -387,24 +416,17 @@ export default function LawyerDashboard() {
           </div>
         ) : activeView === 'doc-verification' ? (
           <div className="p-8">
-            <LawyerDocumentVerification />
+            <LawyerDocumentVerification
+              focusDisputeId={verificationDisputeId}
+              onClearFocus={() => setVerificationDisputeId(null)}
+            />
           </div>
         ) : (
-        <div className={`p-8 ${
-          darkMode ? "bg-slate-900" : "bg-gray-50"
-        } min-h-screen`}>
+        <div className="p-8 min-h-screen">
           {/* Header */}
-          <div className={`mb-8 ${
-            darkMode ? "text-white" : "text-gray-900"
-          }`}>
-            <h1 className="text-3xl font-bold mb-2">
-              Dispute Management
-            </h1>
-            <p className={`text-sm ${
-              darkMode ? "text-gray-400" : "text-gray-600"
-            }`}>
-              Manage and review land disputes efficiently
-            </p>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Dispute Management</h1>
+            <p className="text-sm text-slate-600">Manage and review land disputes efficiently</p>
           </div>
 
         {/* Stats Grid */}
@@ -413,48 +435,46 @@ export default function LawyerDashboard() {
             {
               label: "Total Disputes",
               value: stats.total,
-              icon: "📋",
-              color: darkMode ? "bg-blue-900/30 border-blue-700" : "bg-blue-50 border-blue-200"
+              iconName: "list",
+              tone: "indigo"
             },
             {
               label: "Pending Review",
               value: stats.pending,
-              icon: "⏳",
-              color: darkMode ? "bg-yellow-900/30 border-yellow-700" : "bg-yellow-50 border-yellow-200"
+              iconName: "clock",
+              tone: "amber"
             },
             {
               label: "In Progress",
               value: stats.inProgress,
-              icon: "⚙️",
-              color: darkMode ? "bg-indigo-900/30 border-indigo-700" : "bg-indigo-50 border-indigo-200"
+              iconName: "gear",
+              tone: "indigo"
             },
             {
               label: "Resolved",
               value: stats.resolved,
-              icon: "✅",
-              color: darkMode ? "bg-green-900/30 border-green-700" : "bg-green-50 border-green-200"
+              iconName: "check",
+              tone: "green"
             },
           ].map((stat, i) => (
             <div
               key={i}
-              className={`rounded-xl p-6 border ${stat.color} ${
-                darkMode ? "shadow-lg" : "shadow-md"
-              }`}
+              className="rounded-2xl p-6 border border-slate-200 bg-white shadow-sm"
             >
-              <div className={`text-3xl mb-4 ${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              }`}>
-                {stat.icon}
-              </div>
-              <div className={`text-3xl font-bold mb-1 ${
-                darkMode ? "text-white" : "text-gray-900"
-              }`}>
-                {stat.value}
-              </div>
-              <div className={`text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-600"
-              }`}>
-                {stat.label}
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
+                  <div className="text-sm text-slate-600">{stat.label}</div>
+                </div>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${
+                  stat.tone === 'green'
+                    ? 'bg-[#16A34A]/10 border-[#16A34A]/20 text-[#16A34A]'
+                    : stat.tone === 'amber'
+                    ? 'bg-[#F59E0B]/10 border-[#F59E0B]/20 text-[#F59E0B]'
+                    : 'bg-[#2563EB]/10 border-[#2563EB]/20 text-[#2563EB]'
+                }`}>
+                  <NavIcon name={stat.iconName} className="w-6 h-6" />
+                </div>
               </div>
             </div>
           ))}
@@ -463,31 +483,19 @@ export default function LawyerDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Disputes List */}
           <div className="lg:col-span-1">
-            <div className={`rounded-xl p-6 border ${
-              darkMode 
-                ? "bg-slate-800 border-slate-700" 
-                : "bg-white border-gray-200"
-            } shadow-md`}>
+            <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className={`text-lg font-bold ${
-                  darkMode ? "text-white" : "text-gray-900"
-                }`}>
-                  All Disputes
-                </h2>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  darkMode 
-                    ? "bg-indigo-900/50 text-indigo-300" 
-                    : "bg-indigo-100 text-indigo-700"
-                }`}>
+                <h2 className="text-lg font-bold text-slate-900">All Disputes</h2>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20">
                   {filteredDisputes.length}
                 </span>
               </div>
               <div className="space-y-3 max-h-[700px] overflow-y-auto custom-scrollbar">
                 {filteredDisputes.length === 0 ? (
-                  <div className={`text-center py-12 ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}>
-                    <div className="text-4xl mb-2">📭</div>
+                  <div className="text-center py-12 text-slate-600">
+                    <div className="mx-auto w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 mb-3">
+                      <NavIcon name="inbox" className="w-6 h-6" />
+                    </div>
                     <p>No disputes found</p>
                   </div>
                 ) : (
@@ -497,19 +505,15 @@ export default function LawyerDashboard() {
                       onClick={() => handleViewDispute(dispute._id)}
                       className={`p-4 rounded-lg cursor-pointer transition-all ${
                         selectedDispute?._id === dispute._id
-                          ? darkMode
-                            ? "bg-indigo-600 text-white"
-                            : "bg-indigo-600 text-white"
-                          : darkMode
-                          ? "bg-slate-700 hover:bg-slate-600 border border-slate-600"
-                          : "bg-gray-50 hover:bg-gray-100 border border-gray-200"
+                          ? "bg-[#2563EB] text-white"
+                          : "bg-slate-50 hover:bg-slate-100 border border-slate-200"
                       }`}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h3 className={`font-bold text-sm ${
                           selectedDispute?._id === dispute._id
                             ? "text-white"
-                            : darkMode ? "text-white" : "text-gray-800"
+                            : "text-slate-900"
                         }`}>
                           {dispute.title || 'Untitled Dispute'}
                         </h3>
@@ -520,33 +524,28 @@ export default function LawyerDashboard() {
                       <p className={`text-xs mb-3 ${
                         selectedDispute?._id === dispute._id
                           ? "text-white/80"
-                          : darkMode ? "text-gray-400" : "text-gray-600"
+                          : "text-slate-600"
                       }`}>
                         {dispute.user?.name || 'Unknown User'}
                       </p>
                       <div className="flex items-center justify-between">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          dispute.status === 'resolved'
-                            ? selectedDispute?._id === dispute._id
-                              ? "bg-green-500/30 text-white"
-                              : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                            : dispute.status === 'in progress'
-                            ? selectedDispute?._id === dispute._id
-                              ? "bg-yellow-500/30 text-white"
-                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                            : selectedDispute?._id === dispute._id
-                            ? "bg-blue-500/30 text-white"
-                            : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                          selectedDispute?._id === dispute._id
+                            ? "bg-white/15 text-white"
+                            : (dispute.status === 'resolved')
+                              ? "bg-[#16A34A]/10 text-[#16A34A] border border-[#16A34A]/20"
+                              : (dispute.status === 'in progress')
+                                ? "bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20"
+                                : "bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20"
                         }`}>
                           {dispute.status || 'open'}
                         </span>
                         {dispute.lawyerNotes && dispute.lawyerNotes.length > 0 && (
-                          <span className={`text-xs ${
-                            selectedDispute?._id === dispute._id
-                              ? "text-white/60"
-                              : darkMode ? "text-gray-500" : "text-gray-500"
+                          <span className={`text-xs flex items-center gap-1 ${
+                            selectedDispute?._id === dispute._id ? "text-white/70" : "text-slate-500"
                           }`}>
-                            📝 {dispute.lawyerNotes.length}
+                            <NavIcon name="note" className="w-4 h-4" />
+                            {dispute.lawyerNotes.length}
                           </span>
                         )}
                       </div>
@@ -560,54 +559,48 @@ export default function LawyerDashboard() {
           {/* Dispute Details */}
           <div className="lg:col-span-2">
             {selectedDispute ? (
-              <div className={`rounded-xl p-6 border ${
-                darkMode 
-                  ? "bg-slate-800 border-slate-700" 
-                  : "bg-white border-gray-200"
-              } shadow-md space-y-6`}>
+              <div className="rounded-2xl p-6 border border-slate-200 bg-white shadow-sm space-y-6">
                 {/* Header */}
-                <div className="flex items-start justify-between pb-6 border-b border-gray-700/30 dark:border-gray-700/30">
+                <div className="flex items-start justify-between pb-6 border-b border-slate-200">
                   <div>
-                    <h2 className={`text-3xl font-bold mb-2 ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}>
+                    <h2 className="text-3xl font-bold mb-2 text-slate-900">
                       {selectedDispute.title || 'Dispute Details'}
                     </h2>
-                    <p className={`text-sm ${
-                      darkMode ? "text-gray-400" : "text-gray-600"
-                    }`}>
+                    <p className="text-sm text-slate-600">
                       Case ID: {selectedDispute._id?.slice(-8) || 'N/A'}
                     </p>
                   </div>
-                  <div className={`px-4 py-2 rounded-xl font-semibold ${
-                    selectedDispute.status === 'resolved'
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                      : selectedDispute.status === 'in progress'
-                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                      : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                  }`}>
-                    {selectedDispute.status || 'open'}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        setVerificationDisputeId(selectedDispute._id);
+                        setActiveView('doc-verification');
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-sm transition"
+                    >
+                      <NavIcon name="check" className="w-5 h-5" />
+                      Verify Documents
+                    </button>
+                    <div className={`px-4 py-2 rounded-xl font-semibold border ${
+                      selectedDispute.status === 'resolved'
+                        ? "bg-[#16A34A]/10 text-[#16A34A] border-[#16A34A]/20"
+                        : selectedDispute.status === 'in progress'
+                        ? "bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/20"
+                        : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
+                    }`}>
+                      {selectedDispute.status || 'open'}
+                    </div>
                   </div>
                 </div>
 
                 {/* Status Update Section */}
-                <div className={`${
-                  darkMode ? "bg-gray-800/50" : "bg-gradient-to-r from-indigo-50 to-purple-50"
-                } rounded-2xl p-6`}>
-                  <h3 className={`text-lg font-bold mb-4 ${
-                    darkMode ? "text-white" : "text-gray-800"
-                  }`}>
-                    Update Status
-                  </h3>
+                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                  <h3 className="text-lg font-bold mb-4 text-slate-900">Update Status</h3>
                   <div className="flex gap-3">
                     <select
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                      className={`flex-1 px-4 py-3 rounded-xl border-2 ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300"
-                      } focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-semibold`}
+                      className="flex-1 px-4 py-3 rounded-xl border-2 bg-white border-slate-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 font-semibold"
                     >
                       <option value="open">Open</option>
                       <option value="in progress">In Progress</option>
@@ -615,7 +608,7 @@ export default function LawyerDashboard() {
                     </select>
                     <button
                       onClick={handleUpdateStatus}
-                      className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                      className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl font-bold shadow-sm transition-all"
                     >
                       Update
                     </button>
@@ -624,110 +617,68 @@ export default function LawyerDashboard() {
 
                 {/* Information Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className={`p-4 rounded-xl ${
-                    darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                  }`}>
-                    <label className={`block text-xs font-semibold mb-2 ${
-                      darkMode ? "text-gray-400" : "text-gray-600"
-                    }`}>
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                    <label className="block text-xs font-semibold mb-2 text-slate-600">
                       Client Name
                     </label>
-                    <p className={`text-lg font-semibold ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}>
+                    <p className="text-lg font-semibold text-slate-900">
                       {selectedDispute.user?.name || 'N/A'}
                     </p>
                   </div>
-                  <div className={`p-4 rounded-xl ${
-                    darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                  }`}>
-                    <label className={`block text-xs font-semibold mb-2 ${
-                      darkMode ? "text-gray-400" : "text-gray-600"
-                    }`}>
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                    <label className="block text-xs font-semibold mb-2 text-slate-600">
                       Email
                     </label>
-                    <p className={`text-lg font-semibold ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}>
+                    <p className="text-lg font-semibold text-slate-900">
                       {selectedDispute.user?.email || 'N/A'}
                     </p>
                   </div>
                   {selectedDispute.name && (
-                    <div className={`p-4 rounded-xl ${
-                      darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                    }`}>
-                      <label className={`block text-xs font-semibold mb-2 ${
-                        darkMode ? "text-gray-400" : "text-gray-600"
-                      }`}>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                      <label className="block text-xs font-semibold mb-2 text-slate-600">
                         Land Owner Name
                       </label>
-                      <p className={`text-lg font-semibold ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}>
+                      <p className="text-lg font-semibold text-slate-900">
                         {selectedDispute.name}
                       </p>
                     </div>
                   )}
                   {selectedDispute.landNumber && (
-                    <div className={`p-4 rounded-xl ${
-                      darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                    }`}>
-                      <label className={`block text-xs font-semibold mb-2 ${
-                        darkMode ? "text-gray-400" : "text-gray-600"
-                      }`}>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                      <label className="block text-xs font-semibold mb-2 text-slate-600">
                         Land Number
                       </label>
-                      <p className={`text-lg font-semibold ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}>
+                      <p className="text-lg font-semibold text-slate-900">
                         {selectedDispute.landNumber}
                       </p>
                     </div>
                   )}
                   {selectedDispute.khataNumber && (
-                    <div className={`p-4 rounded-xl ${
-                      darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                    }`}>
-                      <label className={`block text-xs font-semibold mb-2 ${
-                        darkMode ? "text-gray-400" : "text-gray-600"
-                      }`}>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                      <label className="block text-xs font-semibold mb-2 text-slate-600">
                         Khata Number
                       </label>
-                      <p className={`text-lg font-semibold ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}>
+                      <p className="text-lg font-semibold text-slate-900">
                         {selectedDispute.khataNumber}
                       </p>
                     </div>
                   )}
                   {selectedDispute.landArea && (
-                    <div className={`p-4 rounded-xl ${
-                      darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                    }`}>
-                      <label className={`block text-xs font-semibold mb-2 ${
-                        darkMode ? "text-gray-400" : "text-gray-600"
-                      }`}>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                      <label className="block text-xs font-semibold mb-2 text-slate-600">
                         Land Area
                       </label>
-                      <p className={`text-lg font-semibold ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}>
+                      <p className="text-lg font-semibold text-slate-900">
                         {selectedDispute.landArea} hectares
                       </p>
                     </div>
                   )}
                   {selectedDispute.mobileNumber && (
-                    <div className={`p-4 rounded-xl ${
-                      darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                    }`}>
-                      <label className={`block text-xs font-semibold mb-2 ${
-                        darkMode ? "text-gray-400" : "text-gray-600"
-                      }`}>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                      <label className="block text-xs font-semibold mb-2 text-slate-600">
                         Mobile Number
                       </label>
-                      <p className={`text-lg font-semibold ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}>
+                      <p className="text-lg font-semibold text-slate-900">
                         {selectedDispute.mobileNumber}
                       </p>
                     </div>
@@ -736,17 +687,11 @@ export default function LawyerDashboard() {
 
                 {/* Description */}
                 {selectedDispute.description && (
-                  <div className={`p-6 rounded-xl ${
-                    darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                  }`}>
-                    <label className={`block text-sm font-semibold mb-3 ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
+                  <div className="p-6 rounded-xl bg-slate-50 border border-slate-200">
+                    <label className="block text-sm font-semibold mb-3 text-slate-700">
                       Description
                     </label>
-                    <p className={`leading-relaxed ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
+                    <p className="leading-relaxed text-slate-700">
                       {selectedDispute.description}
                     </p>
                   </div>
@@ -754,37 +699,26 @@ export default function LawyerDashboard() {
 
                 {/* Address */}
                 {selectedDispute.address && (
-                  <div className={`p-6 rounded-xl ${
-                    darkMode ? "bg-gray-800/50" : "bg-gray-50"
-                  }`}>
-                    <label className={`block text-sm font-semibold mb-3 ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
+                  <div className="p-6 rounded-xl bg-slate-50 border border-slate-200">
+                    <label className="block text-sm font-semibold mb-3 text-slate-700">
                       Address
                     </label>
-                    <p className={`leading-relaxed ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
+                    <p className="leading-relaxed text-slate-700">
                       {selectedDispute.address}
                     </p>
                   </div>
                 )}
 
                 {/* Lawyer Notes Section */}
-                <div className={`border-t pt-6 ${
-                  darkMode ? "border-gray-700/50" : "border-gray-200"
-                }`}>
+                <div className="border-t pt-6 border-slate-200">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className={`text-xl font-bold ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}>
-                      📝 Lawyer Notes
+                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                      <span className="w-9 h-9 rounded-lg bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB] flex items-center justify-center">
+                        <NavIcon name="note" className="w-5 h-5" />
+                      </span>
+                      Lawyer Notes
                     </h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      darkMode 
-                        ? "bg-indigo-900/50 text-indigo-300" 
-                        : "bg-indigo-100 text-indigo-700"
-                    }`}>
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20">
                       {selectedDispute.lawyerNotes?.length || 0} notes
                     </span>
                   </div>
@@ -792,94 +726,71 @@ export default function LawyerDashboard() {
                   <div className="space-y-4 mb-6 max-h-64 overflow-y-auto custom-scrollbar">
                     {selectedDispute.lawyerNotes && selectedDispute.lawyerNotes.length > 0 ? (
                       selectedDispute.lawyerNotes.map((noteItem, idx) => (
-                        <div key={idx} className={`group p-4 rounded-xl ${
-                          darkMode ? "bg-gray-800/50 hover:bg-gray-800" : "bg-white hover:bg-gray-50"
-                        } border-l-4 border-indigo-500 transition-all`}>
+                        <div key={idx} className="group p-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 border-l-4 border-l-[#2563EB] transition-all">
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                              <div className="w-8 h-8 rounded-full bg-[#0F172A] flex items-center justify-center text-white text-sm font-bold">
                                 {noteItem.lawyerName?.charAt(0) || 'L'}
                               </div>
-                              <span className={`font-semibold ${
-                                darkMode ? "text-white" : "text-gray-800"
-                              }`}>
+                              <span className="font-semibold text-slate-900">
                                 {noteItem.lawyerName || 'Lawyer'}
                               </span>
                             </div>
-                            <span className={`text-xs ${
-                              darkMode ? "text-gray-500" : "text-gray-500"
-                            }`}>
+                            <span className="text-xs text-slate-500">
                               {new Date(noteItem.createdAt).toLocaleString()}
                             </span>
                           </div>
-                          <p className={`mt-2 ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          }`}>
+                          <p className="mt-2 text-slate-700">
                             {noteItem.note}
                           </p>
                         </div>
                       ))
                     ) : (
-                      <div className={`text-center py-8 ${
-                        darkMode ? "text-gray-500" : "text-gray-500"
-                      }`}>
-                        <div className="text-3xl mb-2">📝</div>
+                      <div className="text-center py-8 text-slate-600">
+                        <div className="mx-auto w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 mb-3">
+                          <NavIcon name="note" className="w-6 h-6" />
+                        </div>
                         <p>No notes yet. Add your first note below.</p>
                       </div>
                     )}
                   </div>
 
                   {/* Add Note Form */}
-                  <div className={`p-6 rounded-xl ${
-                    darkMode ? "bg-gray-800/50" : "bg-gradient-to-r from-indigo-50 to-purple-50"
-                  }`}>
-                    <label className={`block text-sm font-semibold mb-3 ${
-                      darkMode ? "text-gray-300" : "text-gray-700"
-                    }`}>
+                  <div className="p-6 rounded-xl bg-slate-50 border border-slate-200">
+                    <label className="block text-sm font-semibold mb-3 text-slate-700">
                       Add New Note
                     </label>
                     <textarea
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       placeholder="Enter your professional note or observation here..."
-                      className={`w-full px-4 py-3 rounded-xl border-2 ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white placeholder-gray-500"
-                          : "bg-white border-gray-300"
-                      } focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all`}
+                      className="w-full px-4 py-3 rounded-xl border-2 bg-white border-slate-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 transition-all"
                       rows="4"
                     />
                     <button
                       onClick={handleAddNote}
                       disabled={!note.trim()}
-                      className={`mt-4 w-full py-3 rounded-xl font-bold shadow-lg transition-all transform hover:scale-105 ${
+                      className={`mt-4 w-full py-3 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 ${
                         note.trim()
-                          ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-xl"
-                          : darkMode
-                          ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-[#16A34A] hover:bg-[#15803D] text-white"
+                          : "bg-slate-200 text-slate-500 cursor-not-allowed"
                       }`}
                     >
-                      ➕ Add Note
+                      <NavIcon name="plus" className="w-5 h-5" />
+                      Add Note
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className={`${
-                darkMode 
-                  ? "bg-gray-900/60 backdrop-blur-xl border border-gray-700/50" 
-                  : "bg-white/80 backdrop-blur-xl border border-white/50"
-              } rounded-3xl p-12 shadow-xl text-center`}>
-                <div className="text-6xl mb-4">⚖️</div>
-                <h3 className={`text-2xl font-bold mb-2 ${
-                  darkMode ? "text-white" : "text-gray-800"
-                }`}>
+              <div className="bg-white rounded-3xl p-12 border border-slate-200 shadow-sm text-center">
+                <div className="mx-auto w-16 h-16 rounded-2xl bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB] flex items-center justify-center mb-4">
+                  <NavIcon name="scale" className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2 text-slate-900">
                   Select a Dispute
                 </h3>
-                <p className={`${
-                  darkMode ? "text-gray-400" : "text-gray-600"
-                }`}>
+                <p className="text-slate-600">
                   Choose a dispute from the list to view details and add notes
                 </p>
               </div>

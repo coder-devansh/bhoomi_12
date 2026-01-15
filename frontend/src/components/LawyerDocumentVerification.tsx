@@ -40,7 +40,15 @@ interface VerificationSummary {
   total: number;
 }
 
-const LawyerDocumentVerification: React.FC = () => {
+type LawyerDocumentVerificationProps = {
+  focusDisputeId?: string | null;
+  onClearFocus?: () => void;
+};
+
+const LawyerDocumentVerification: React.FC<LawyerDocumentVerificationProps> = ({
+  focusDisputeId = null,
+  onClearFocus,
+}) => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [sharedDocuments, setSharedDocuments] = useState<Document[]>([]);
   const [summary, setSummary] = useState<VerificationSummary | null>(null);
@@ -132,7 +140,7 @@ const LawyerDocumentVerification: React.FC = () => {
 
       const data = await response.json();
       if (data.success) {
-        alert(verified ? '✅ Document verified successfully!' : '❌ Document rejected');
+        alert(verified ? 'Document verified successfully.' : 'Document rejected.');
         fetchDocuments();
         fetchSummary();
         setSelectedDoc(null);
@@ -190,10 +198,22 @@ const LawyerDocumentVerification: React.FC = () => {
   };
 
   const filteredDocuments = documents.filter(doc => {
+    if (focusDisputeId && doc.dispute?._id !== focusDisputeId) return false;
     if (filter === 'all') return true;
     if (filter === 'pending') return doc.status === 'pending' || doc.status === 'verified';
     return doc.status === filter;
   });
+
+  const filteredSharedDocuments = sharedDocuments.filter((doc) => {
+    if (focusDisputeId && doc.dispute?._id !== focusDisputeId) return false;
+    return true;
+  });
+
+  const focusedDisputeTitle =
+    (focusDisputeId
+      ? (documents.find((d) => d.dispute?._id === focusDisputeId)?.dispute?.title ||
+          sharedDocuments.find((d) => d.dispute?._id === focusDisputeId)?.dispute?.title)
+      : undefined) || undefined;
 
   return (
     <div className="p-6 space-y-6">
@@ -209,10 +229,24 @@ const LawyerDocumentVerification: React.FC = () => {
               onClick={() => { fetchDocuments(); fetchSharedDocuments(); fetchSummary(); }}
               className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
             >
-              🔄 Refresh
+              Refresh
             </button>
           </div>
         </div>
+
+        {focusDisputeId && (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white/15 px-4 py-3">
+            <div className="text-sm text-white/90">
+              Showing documents for dispute{focusedDisputeTitle ? `: ${focusedDisputeTitle}` : ''}
+            </div>
+            <button
+              onClick={() => onClearFocus?.()}
+              className="text-sm font-medium bg-white/20 hover:bg-white/30 transition px-3 py-1.5 rounded-lg"
+            >
+              Clear
+            </button>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-3 mt-6 border-b border-white/20 pb-2">
@@ -224,7 +258,7 @@ const LawyerDocumentVerification: React.FC = () => {
                 : 'text-white/80 hover:text-white hover:bg-white/10'
             }`}
           >
-            ✅ Document Verification ({summary?.pending || 0} pending)
+            Document Verification ({summary?.pending || 0} pending)
           </button>
           <button
             onClick={() => setActiveTab('shared')}
@@ -234,7 +268,7 @@ const LawyerDocumentVerification: React.FC = () => {
                 : 'text-white/80 hover:text-white hover:bg-white/10'
             }`}
           >
-            📁 Shared Documents ({sharedDocuments.length})
+            Shared Documents ({filteredSharedDocuments.length})
           </button>
         </div>
 
@@ -267,10 +301,10 @@ const LawyerDocumentVerification: React.FC = () => {
           {/* Filters */}
           <div className="flex gap-2">
             {[
-              { id: 'pending', label: '⏳ Pending', count: summary?.pending },
-              { id: 'verified', label: '✅ Verified', count: summary?.verified },
-              { id: 'rejected', label: '❌ Rejected', count: summary?.rejected },
-              { id: 'all', label: '📋 All', count: summary?.total },
+              { id: 'pending', label: 'Pending', count: summary?.pending },
+              { id: 'verified', label: 'Verified', count: summary?.verified },
+              { id: 'rejected', label: 'Rejected', count: summary?.rejected },
+              { id: 'all', label: 'All', count: summary?.total },
             ].map(f => (
               <button
                 key={f.id}
@@ -290,12 +324,11 @@ const LawyerDocumentVerification: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             {loading ? (
               <div className="p-12 text-center">
-                <div className="animate-spin text-4xl mb-4">⏳</div>
+                <div className="w-10 h-10 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-gray-500">Loading documents...</p>
               </div>
             ) : filteredDocuments.length === 0 ? (
               <div className="p-12 text-center">
-                <span className="text-6xl mb-4 block">📭</span>
                 <p className="text-gray-500">No documents {filter !== 'all' ? `with status "${filter}"` : ''}</p>
               </div>
             ) : (
@@ -314,8 +347,8 @@ const LawyerDocumentVerification: React.FC = () => {
                           doc.status === 'rejected' ? 'bg-red-100' : 'bg-yellow-100'
                     }`}>
                       <span className="text-2xl">
-                        {doc.status === 'verified' ? '✅' :
-                         doc.status === 'rejected' ? '❌' : '📄'}
+                        {doc.status === 'verified' ? 'V' :
+                         doc.status === 'rejected' ? 'X' : 'DOC'}
                       </span>
                     </div>
                     <div>
@@ -329,13 +362,13 @@ const LawyerDocumentVerification: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-sm text-gray-600">
-                          👤 {doc.uploadedBy?.name || 'Unknown User'}
+                          {doc.uploadedBy?.name || 'Unknown User'}
                         </span>
                         {doc.dispute && (
                           <>
                             <span className="text-gray-400">|</span>
                             <span className="text-sm text-purple-600">
-                              📋 {doc.dispute.title}
+                              {doc.dispute.title}
                             </span>
                           </>
                         )}
@@ -350,15 +383,15 @@ const LawyerDocumentVerification: React.FC = () => {
                       doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
                       'bg-yellow-100 text-yellow-700'
                     }`}>
-                      {doc.status === 'verified' ? '✅ Verified' :
-                       doc.status === 'rejected' ? '❌ Rejected' :
-                       '⏳ Pending'}
+                      {doc.status === 'verified' ? 'Verified' :
+                       doc.status === 'rejected' ? 'Rejected' :
+                       'Pending'}
                     </span>
                     
                     {/* Blockchain Badge */}
                     {doc.blockchain?.isVerified && (
                       <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                        🔗 Blockchain
+                        Blockchain
                       </span>
                     )}
                   </div>
@@ -369,7 +402,6 @@ const LawyerDocumentVerification: React.FC = () => {
                   <div className="mt-4 bg-blue-50 rounded-lg p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span>🔍</span>
                         <span className="font-medium text-blue-800">OCR Analysis</span>
                         <span className="text-sm text-blue-600">
                           ({doc.ocrExtraction.confidence?.toFixed(1)}% confidence)
@@ -401,7 +433,6 @@ const LawyerDocumentVerification: React.FC = () => {
                 {doc.blockchain?.fileHash && (
                   <div className="mt-3 bg-gray-50 rounded-lg p-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span>🔗</span>
                       <span className="font-mono text-xs text-gray-500 truncate max-w-md">
                         SHA-256: {doc.blockchain.fileHash}
                       </span>
@@ -410,7 +441,7 @@ const LawyerDocumentVerification: React.FC = () => {
                       onClick={() => navigator.clipboard.writeText(doc.blockchain.fileHash)}
                       className="text-sm text-gray-500 hover:text-gray-700"
                     >
-                      📋 Copy
+                      Copy
                     </button>
                   </div>
                 )}
@@ -422,7 +453,7 @@ const LawyerDocumentVerification: React.FC = () => {
                       onClick={() => setSelectedDoc(selectedDoc?.id === doc.id ? null : doc)}
                       className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition"
                     >
-                      {selectedDoc?.id === doc.id ? '✕ Cancel' : '📝 Review & Verify'}
+                      {selectedDoc?.id === doc.id ? 'Cancel' : 'Review & Verify'}
                     </button>
                     <a
                       href={`${API_URL}/download/${doc.id}`}
@@ -430,7 +461,7 @@ const LawyerDocumentVerification: React.FC = () => {
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
                     >
-                      📥 Download
+                      Download
                     </a>
                   </div>
                 )}
@@ -473,14 +504,14 @@ const LawyerDocumentVerification: React.FC = () => {
                           disabled={verifyingId === doc.id}
                           className="flex-1 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition disabled:opacity-50"
                         >
-                          {verifyingId === doc.id ? '⏳ Processing...' : '✅ Verify Document'}
+                          {verifyingId === doc.id ? 'Processing...' : 'Verify Document'}
                         </button>
                         <button
                           onClick={() => handleVerify(doc.id, false)}
                           disabled={verifyingId === doc.id || !rejectionReason}
                           className="flex-1 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition disabled:opacity-50"
                         >
-                          {verifyingId === doc.id ? '⏳ Processing...' : '❌ Reject Document'}
+                          {verifyingId === doc.id ? 'Processing...' : 'Reject Document'}
                         </button>
                       </div>
                     </div>
@@ -498,23 +529,22 @@ const LawyerDocumentVerification: React.FC = () => {
       {activeTab === 'shared' && (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="p-4 border-b bg-blue-50">
-            <h3 className="font-semibold text-blue-800">📁 Documents Shared by Users</h3>
+            <h3 className="font-semibold text-blue-800">Documents Shared by Users</h3>
             <p className="text-sm text-blue-600">These documents have been shared with lawyers for review</p>
           </div>
           
-          {sharedDocuments.length === 0 ? (
+          {filteredSharedDocuments.length === 0 ? (
             <div className="p-12 text-center">
-              <span className="text-6xl mb-4 block">📭</span>
               <p className="text-gray-500">No documents have been shared yet</p>
             </div>
           ) : (
             <div className="divide-y">
-              {sharedDocuments.map(doc => (
+              {filteredSharedDocuments.map(doc => (
                 <div key={doc.id} className="p-4 hover:bg-gray-50 transition">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                        <span className="text-2xl">📄</span>
+                        <span className="text-xs font-bold text-blue-700">DOC</span>
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-800">{doc.fileName}</h3>
@@ -527,13 +557,13 @@ const LawyerDocumentVerification: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-sm text-gray-600">
-                            👤 {doc.uploadedBy?.name || 'Unknown User'}
+                            {doc.uploadedBy?.name || 'Unknown User'}
                           </span>
                           {doc.description && (
                             <>
                               <span className="text-gray-400">|</span>
                               <span className="text-sm text-gray-500">
-                                📝 {doc.description}
+                                {doc.description}
                               </span>
                             </>
                           )}
@@ -541,7 +571,7 @@ const LawyerDocumentVerification: React.FC = () => {
                         {doc.dispute && (
                           <div className="mt-2">
                             <span className="text-sm text-purple-600">
-                              📋 Linked to: {doc.dispute.title}
+                              Linked to: {doc.dispute.title}
                             </span>
                           </div>
                         )}
@@ -555,14 +585,14 @@ const LawyerDocumentVerification: React.FC = () => {
                         doc.visibility === 'lawyer' ? 'bg-blue-100 text-blue-700' :
                         'bg-gray-100 text-gray-700'
                       }`}>
-                        {doc.visibility === 'public' ? '🌐 Public' :
-                         doc.visibility === 'lawyer' ? '⚖️ Lawyer' : '🔒 Private'}
+                        {doc.visibility === 'public' ? 'Public' :
+                         doc.visibility === 'lawyer' ? 'Lawyer' : 'Private'}
                       </span>
                       
                       {/* Blockchain Badge */}
                       {doc.blockchain?.isVerified && (
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
-                          🔗 Blockchain Verified
+                          Blockchain Verified
                         </span>
                       )}
                     </div>
@@ -572,7 +602,6 @@ const LawyerDocumentVerification: React.FC = () => {
                   {doc.blockchain?.fileHash && (
                     <div className="mt-3 bg-gray-50 rounded-lg p-2 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span>🔗</span>
                         <span className="font-mono text-xs text-gray-500 truncate max-w-md">
                           SHA-256: {doc.blockchain.fileHash}
                         </span>
@@ -581,7 +610,7 @@ const LawyerDocumentVerification: React.FC = () => {
                         onClick={() => navigator.clipboard.writeText(doc.blockchain.fileHash)}
                         className="text-sm text-gray-500 hover:text-gray-700"
                       >
-                        📋 Copy
+                        Copy
                       </button>
                     </div>
                   )}
@@ -591,7 +620,6 @@ const LawyerDocumentVerification: React.FC = () => {
                     <div className="mt-3 bg-blue-50 rounded-lg p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span>🔍</span>
                           <span className="font-medium text-blue-800">OCR Analysis</span>
                           <span className="text-sm text-blue-600">
                             ({doc.ocrExtraction.confidence?.toFixed(1)}% confidence)
@@ -624,13 +652,13 @@ const LawyerDocumentVerification: React.FC = () => {
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
                     >
-                      📥 Download
+                      Download
                     </a>
                     <button
                       onClick={() => handleRunOCR(doc.id)}
                       className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition"
                     >
-                      🔍 Run OCR
+                      Run OCR
                     </button>
                   </div>
                 </div>
@@ -645,12 +673,12 @@ const LawyerDocumentVerification: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between">
-              <h2 className="text-xl font-bold">📝 Extracted Text (OCR)</h2>
+              <h2 className="text-xl font-bold">Extracted Text (OCR)</h2>
               <button
                 onClick={() => setShowOCRModal(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
-                ✕
+                Close
               </button>
             </div>
             <div className="p-4 overflow-y-auto max-h-[60vh]">
@@ -663,7 +691,7 @@ const LawyerDocumentVerification: React.FC = () => {
                 onClick={() => navigator.clipboard.writeText(ocrText)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
-                📋 Copy to Clipboard
+                Copy to Clipboard
               </button>
             </div>
           </div>
